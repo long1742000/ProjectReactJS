@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from "./axios.js";
 import { useEffect, useState } from "react";
 
 const fetchData = () => {
-    return axios.get('https://reqres.in/api/users?page=1');
+    return axios.get('/api/users?page=1');
 }
 
 export default fetchData;
