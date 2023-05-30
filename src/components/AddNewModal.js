@@ -7,31 +7,37 @@ import { toast } from 'react-toastify';
 const AddNewModal = (props) => {
 
     const { show, handleClose, addNewData } = props;
-    const [name, setName] = useState("");
-    const [job, setJob] = useState("");
+    const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
 
-    const typeName = (event) => {
-        setName(event.target.value);
+    const typeEmail = (event) => {
+        setEmail(event.target.value);
     }
 
-    const typeJob = (event) => {
-        setJob(event.target.value);
+    const typeFirstName = (event) => {
+        setFirstName(event.target.value);
+    }
+
+    const typeLastName = (event) => {
+        setLastName(event.target.value);
     }
 
     const clearInput = () => {
-        setName("");
-        setJob("");
+        setEmail("");
+        setFirstName("");
+        setLastName("");
     }
 
     const saveUser = async () => {
-        if (name.length == 0 || job.length == 0) {
+        if (email.length == 0 || firstName.length == 0 || lastName.length == 0) {
             toast.info("Please type all information")
         }
         else {
-            let res = await postNewUser(name, job);
+            let res = await postNewUser(email, firstName, lastName);
             if (res && res.id) {
                 handleClose();
-                addNewData({ first_name: name, id: res.id });
+                addNewData({ id: res.id, email: email, first_name: firstName, last_name: lastName });
                 clearInput();
                 toast.success("Success...")
             }
@@ -50,15 +56,21 @@ const AddNewModal = (props) => {
             <Modal.Body>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">Name</span>
+                        <span className="input-group-text" id="basic-addon1">Email</span>
                     </div>
-                    <input type="text" className="form-control" aria-label="name" aria-describedby="basic-addon1" onChange={(event) => { typeName(event) }} />
+                    <input type="email" className="form-control" aria-label="email" aria-describedby="basic-addon1" onChange={(event) => { typeEmail(event) }} />
                 </div>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">Job</span>
+                        <span className="input-group-text" id="basic-addon1">First name</span>
                     </div>
-                    <input type="text" className="form-control" aria-label="job" aria-describedby="basic-addon1" onChange={(event) => { typeJob(event) }} />
+                    <input type="text" className="form-control" aria-label="firstName" aria-describedby="basic-addon1" onChange={(event) => { typeFirstName(event) }} />
+                </div>
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" id="basic-addon1">Last name</span>
+                    </div>
+                    <input type="text" className="form-control" aria-label="lastName" aria-describedby="basic-addon1" onChange={(event) => { typeLastName(event) }} />
                 </div>
 
             </Modal.Body>
