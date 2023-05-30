@@ -1,7 +1,8 @@
 import Table from 'react-bootstrap/Table';
-import fetchData from './fetchData';
+import { fetchData } from './fetchData';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import AddNewModal from './AddNewModal';
 
 const TableUser = (props) => {
 
@@ -22,14 +23,30 @@ const TableUser = (props) => {
         }
     }
 
+    const [showModalAddNeww, setShowModalAddNew] = useState(false);
+
+    const handleClose = () => {
+        setShowModalAddNew(false);
+    }
+
     console.log(listData);
 
     const handlePageClick = (event) => {
         getData(event.selected + 1);
     }
 
+    const addNewData = (data) => {
+        setData([data, ...listData]);
+    }
+
     return (
         <>
+            <h3>List user:</h3>
+            <div className='action'>
+                <input className='form-control m-2 search' placeholder='Search...'></input>
+                <button className='btn btn-primary m-2'>Search</button>
+                <button className='btn btn-primary btn-action m-2' onClick={() => { setShowModalAddNew(true) }}>Add new</button>
+            </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -93,6 +110,12 @@ const TableUser = (props) => {
                 containerClassName="pagination"
                 activeClassName="active"
                 renderOnZeroPageCount={null}
+            />
+
+            <AddNewModal
+                show={showModalAddNeww}
+                handleClose={handleClose}
+                addNewData={addNewData}
             />
         </>
     )

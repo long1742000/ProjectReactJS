@@ -1,32 +1,44 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { postNewUser } from './fetchData';
+import { toast } from 'react-toastify';
 
 const AddNewModal = (props) => {
 
-    const { show, handleClose } = props;
-    const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const { show, handleClose, addNewData } = props;
+    const [name, setName] = useState("");
+    const [job, setJob] = useState("");
 
-    const typeEmail = (event) => {
-        setEmail(event.target.value);
+    const typeName = (event) => {
+        setName(event.target.value);
     }
 
-    const typeFirstName = (event) => {
-        setFirstName(event.target.value);
+    const typeJob = (event) => {
+        setJob(event.target.value);
     }
 
-    const typeLastName = (event) => {
-        setLastName(event.target.value);
+    const clearInput = () => {
+        setName("");
+        setJob("");
     }
 
-    const saveUser = () => {
-        if (email.length == 0 || firstName.length == 0 || lastName.length == 0) {
-            console.log(`Please type all information`);
+    const saveUser = async () => {
+        if (name.length == 0 || job.length == 0) {
+            toast.info("Please type all information")
         }
         else {
-            console.log(`Save email: ${email}, first name: ${firstName}, last name: ${lastName}`);
+            let res = await postNewUser(name, job);
+            if (res && res.id) {
+                handleClose();
+                addNewData({ first_name: name, id: res.id });
+                clearInput();
+                toast.success("Success...")
+            }
+            else {
+                toast.error("Something went wrong...")
+                clearInput();
+            }
         }
     }
 
@@ -38,21 +50,15 @@ const AddNewModal = (props) => {
             <Modal.Body>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">Email</span>
+                        <span className="input-group-text" id="basic-addon1">Name</span>
                     </div>
-                    <input type="text" className="form-control" aria-label="email" aria-describedby="basic-addon1" onChange={(event) => { typeEmail(event) }} />
+                    <input type="text" className="form-control" aria-label="name" aria-describedby="basic-addon1" onChange={(event) => { typeName(event) }} />
                 </div>
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">First name</span>
+                        <span className="input-group-text" id="basic-addon1">Job</span>
                     </div>
-                    <input type="text" className="form-control" aria-label="firstName" aria-describedby="basic-addon1" onChange={(event) => { typeFirstName(event) }} />
-                </div>
-                <div className="input-group mb-3">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">Last name</span>
-                    </div>
-                    <input type="text" className="form-control" aria-label="lastName" aria-describedby="basic-addon1" onChange={(event) => { typeLastName(event) }} />
+                    <input type="text" className="form-control" aria-label="job" aria-describedby="basic-addon1" onChange={(event) => { typeJob(event) }} />
                 </div>
 
             </Modal.Body>
@@ -61,7 +67,7 @@ const AddNewModal = (props) => {
                     Close
                 </Button>
                 <Button variant="primary" onClick={saveUser}>
-                    Save Changes
+                    Save
                 </Button>
             </Modal.Footer>
         </Modal>
