@@ -5,7 +5,7 @@ import ReactPaginate from 'react-paginate';
 import AddNewModal from './AddNewModal';
 import DeleteModal from './DeleteModal';
 import { toast } from 'react-toastify';
-import _ from "lodash";
+import _, { debounce } from "lodash";
 
 const TableUser = (props) => {
 
@@ -37,7 +37,7 @@ const TableUser = (props) => {
         setLastName(event.target.value);
     }
 
-    const typeKeyword = (event) => {
+    const typeKeyword = debounce((event) => {
         let typing = event.target.value;
         if (typing) {
             let cloneListData = [...listData];
@@ -47,7 +47,7 @@ const TableUser = (props) => {
         else {
             getData(1);
         }
-    }
+    }, 100);
 
     // componentDidMount
     useEffect(() => {
@@ -141,7 +141,7 @@ const TableUser = (props) => {
         <>
             <h3>List user:</h3>
             <div className='action'>
-                <input className='form-control m-2 search' onChange={(event) => { typeKeyword(event) }} placeholder='Search...'></input>
+                <input className='form-control m-2 search' onChange={(event) => { typeKeyword(event) }} placeholder='Search by email...'></input>
                 <button className='btn btn-primary btn-action m-2' onClick={() => { setShowModalAddNew(true) }}>Add new</button>
             </div>
             <Table striped bordered hover>
