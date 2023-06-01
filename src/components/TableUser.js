@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import AddNewModal from './AddNewModal';
 import DeleteModal from './DeleteModal';
 import { toast } from 'react-toastify';
+import _ from "lodash";
 
 const TableUser = (props) => {
 
@@ -20,6 +21,10 @@ const TableUser = (props) => {
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
 
+    // Sort
+    const [sortBy, setSortBy] = useState("id");
+    const [sortKey, setSortKey] = useState("asc");
+
     const typeEmail = (event) => {
         setEmail(event.target.value);
     }
@@ -30,6 +35,18 @@ const TableUser = (props) => {
 
     const typeLastName = (event) => {
         setLastName(event.target.value);
+    }
+
+    const typeKeyword = (event) => {
+        let typing = event.target.value;
+        if (typing) {
+            let cloneListData = [...listData];
+            cloneListData = cloneListData.filter(item => item.email.includes(typing));
+            setData(cloneListData);
+        }
+        else {
+            getData(1);
+        }
     }
 
     // componentDidMount
@@ -111,20 +128,42 @@ const TableUser = (props) => {
         setSelectedData();
     }
 
+    const clickSort = (key, by) => {
+        setSortKey(key);
+        setSortBy(by);
+
+        let cloneListData = [...listData];
+        cloneListData = _.orderBy(cloneListData, [by], [key]);
+        setData(cloneListData);
+    }
+
     return (
         <>
             <h3>List user:</h3>
             <div className='action'>
-                <input className='form-control m-2 search' placeholder='Search...'></input>
-                <button className='btn btn-primary m-2'>Search</button>
+                <input className='form-control m-2 search' onChange={(event) => { typeKeyword(event) }} placeholder='Search...'></input>
                 <button className='btn btn-primary btn-action m-2' onClick={() => { setShowModalAddNew(true) }}>Add new</button>
             </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Id
+                            <svg onClick={() => { clickSort("desc", "id") }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-down sort" viewBox="0 0 16 16">
+                                <path d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
+                            </svg>
+                            <svg onClick={() => { clickSort("asc", "id") }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-up sort" viewBox="0 0 16 16">
+                                <path d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
+                            </svg>
+                        </th>
                         <th>Email</th>
-                        <th>First Name</th>
+                        <th>First Name
+                            <svg onClick={() => { clickSort("desc", "first_name") }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-down sort" viewBox="0 0 16 16">
+                                <path d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z" />
+                            </svg>
+                            <svg onClick={() => { clickSort("asc", "first_name") }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="bi bi-arrow-up sort" viewBox="0 0 16 16">
+                                <path d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z" />
+                            </svg>
+                        </th>
                         <th>Last Name</th>
                         <th></th>
                     </tr>
@@ -199,7 +238,7 @@ const TableUser = (props) => {
                         </tr>
                     }
                 </tbody>
-            </Table>
+            </Table >
             <ReactPaginate
                 nextLabel="next >"
                 onPageChange={handlePageClick}
