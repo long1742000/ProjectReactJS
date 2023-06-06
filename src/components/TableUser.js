@@ -7,6 +7,7 @@ import DeleteModal from './DeleteModal';
 import { toast } from 'react-toastify';
 import _, { debounce } from "lodash";
 import { CSVLink } from "react-csv";
+import Papa from "papaparse";
 
 const TableUser = (props) => {
 
@@ -141,6 +142,7 @@ const TableUser = (props) => {
         setData(cloneListData);
     }
 
+    // Export data function
     const getDataExport = (event, done) => {
         let rs = [];
         if (listData && listData.length > 0) {
@@ -159,6 +161,58 @@ const TableUser = (props) => {
             done();
         }
     }
+
+    // Import data function
+    const importDatafromFile = (event) => {
+        let file = event.target.files[0];
+        if (file && file.type !== "text/csv") {
+            toast.error("Please import file CSV")
+        }
+        else {
+            Papa.parse(file, {
+                complete: function (results) {
+                    let dataImport = results.data;
+                    if (dataImport && dataImport.length > 0) {
+                        if (dataImport[0] && dataImport[0].length === 3) {
+                            if (dataImport[0][0] !== "email"
+                                || dataImport[0][1] !== "first_name"
+                                || dataImport[0][2] !== "last_name"
+                            ) {
+                                toast.error("Wrong format header CSV file !!!");
+                            }
+                            else {
+                                console.log(dataImport);
+                                let obj = {};
+                                let rs = [];
+                                dataImport.map((item, index) => {
+                                    if (index > 0 && item.length === 3) {
+                                        obj.id = index;
+                                        obj.email = item[0];
+                                        obj.first_name = item[1];
+                                        obj.last_name = item[2];
+
+                                        rs.push(obj);
+                                    }
+                                })
+
+                                setData(rs);
+                                toast.success("Success!!!")
+                            }
+                        }
+                        else {
+                            toast.error("Wrong format CSV file !!!");
+                        }
+                    }
+                    else {
+                        toast.error("Can not found data in CSV file !!!");
+                    }
+                }
+            });
+        }
+
+
+    }
+
     return (
         <>
             <h3>List user:</h3>
@@ -174,11 +228,11 @@ const TableUser = (props) => {
                         </svg> Add new
                     </button>
 
-                    <input id="file" type='file' hidden="true"></input>
+                    <input id="file" type='file' hidden onChange={(event) => { importDatafromFile(event) }} ></input>
                     <label className="btn btn-success btn-action m-2" htmlFor="file">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
-                            <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+                            <path d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
+                            <path d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
                         </svg> Import
                     </label>
 
@@ -188,7 +242,7 @@ const TableUser = (props) => {
                         className="btn btn-warning btn-action m-2"
                         asyncOnClick={true}
                         onClick={getDataExport}
-                    ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                    ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-download" viewBox="0 0 16 16">
                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                             <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
                         </svg> Export</CSVLink>
