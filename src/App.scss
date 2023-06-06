@@ -21,6 +21,15 @@ code {
     float: left;
     width: 30%;
   }
+
+  a {
+    text-decoration: none;
+    color: white
+  }
+
+  a:hover {
+    color: white;
+  }
 }
 
 table th,
