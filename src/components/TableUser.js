@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import _, { debounce } from "lodash";
 import { CSVLink } from "react-csv";
 import Papa from "papaparse";
+import { useNavigate } from 'react-router-dom';
 
 const TableUser = (props) => {
 
@@ -17,6 +18,8 @@ const TableUser = (props) => {
     const [selectedData, setSelectedData] = useState({})
     const [editKey, setEditKey] = useState(false);
     const [action, setAction] = useState(0);
+
+    const navigate = useNavigate();
 
     // Edit value
     const [email, setEmail] = useState();
@@ -56,7 +59,12 @@ const TableUser = (props) => {
 
     // componentDidMount
     useEffect(() => {
-        getData(1);
+        if (localStorage.getItem('user')) {
+            getData(1);
+        }
+        else {
+            navigate('/error');
+        }
     }, [])
 
     // Handle modal

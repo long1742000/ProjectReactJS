@@ -45,3 +45,34 @@ td {
 .sort {
   float: right;
 }
+
+.loginPage {
+
+  h3 {
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .inputPass {
+    position: relative;
+
+    .eyePass {
+      position: absolute;
+      right: 8px;
+      top: 5px;
+      cursor: pointer;
+    }
+  }
+}
+
+.detail {
+  cursor: pointer;
+}
+
+.avatar {
+  width: 100%;
+  border-radius: 50%;
+}

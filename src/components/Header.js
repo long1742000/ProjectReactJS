@@ -3,13 +3,29 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import logoApp from '../assets/images/logo192.png'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { NavLink } from "react-router-dom";
+import { toast } from 'react-toastify';
+import information from '../store/Information';
+import { useState } from 'react';
+import DetailModal from './DetailModal';
 
 const Header = (props) => {
 
-    let location = useLocation();
+    const [showModal, setShowModal] = useState(false);
+
+    const handleClose = () => {
+        setShowModal(false);
+    }
+
+    const navigate = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem('user');
+        navigate('/login');
+        toast.success('Log out success !!!')
+    }
 
     return (
         <>
@@ -25,26 +41,43 @@ const Header = (props) => {
                         />
                         Project React</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <NavLink to="/" className="nav-link">Home</NavLink>
-                            <NavLink to="/users" className="nav-link">List User</NavLink>
-                        </Nav>
-                        <Nav>
-                            <NavDropdown title="Setting" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/login">
-                                    Login
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">
-                                    Logout
-                                </NavDropdown.Item>
-                            </NavDropdown>
+                    {(localStorage.getItem('user') || window.location.pathname === "/") &&
 
-                        </Nav>
-                    </Navbar.Collapse>
+
+                        <Navbar.Collapse id="basic-navbar-nav">
+                            <Nav className="me-auto">
+                                <NavLink to="/" className="nav-link">Home</NavLink>
+                                <NavLink to="/users" className="nav-link">List User</NavLink>
+                            </Nav>
+                            <Nav>
+                                {localStorage.getItem('user') &&
+                                    <span className='nav-link'>Welcome, {information.last_name}</span>
+                                }
+                                <NavDropdown title="Setting" id="basic-nav-dropdown">
+                                    {!localStorage.getItem('user') &&
+                                        <NavLink to="/login" className="dropdown-item">Login</NavLink>
+                                    }
+                                    {localStorage.getItem('user') &&
+                                        <>
+                                            <span className="dropdown-item detail" onClick={() => { setShowModal(true) }}>Detail</span>
+                                            <NavDropdown.Divider />
+                                            <NavDropdown.Item onClick={() => { logout() }}>
+                                                Logout
+                                            </NavDropdown.Item>
+                                        </>
+                                    }
+                                </NavDropdown>
+
+                            </Nav>
+                        </Navbar.Collapse>
+                    }
                 </Container>
             </Navbar >
+
+            <DetailModal
+                show={showModal}
+                handleClose={handleClose}
+            ></DetailModal>
         </>
     )
 }

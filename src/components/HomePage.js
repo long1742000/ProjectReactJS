@@ -5,7 +5,7 @@ const HomePage = () => {
             <h3>Đây là trang home</h3>
             <p>- Sử dụng API từ trang web <strong>https://reqres.in/</strong> để tạo website</p>
             <p>- Sử dụng thư viện React để tạo 1 website cơ bản gồm các chức năng:</p>
-            <p>+ Đăng nhập</p>
+            <p>+ Đăng nhập <strong>(username: long174 - password: 123)</strong></p>
             <p>+ CRUD</p>
             <p>+ Search user theo <strong>Email</strong></p>
             <p>+ Sắp xếp user theo <strong>ID</strong> hoặc <strong>First name</strong></p>

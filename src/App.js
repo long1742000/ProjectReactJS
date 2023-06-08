@@ -12,6 +12,7 @@ import {
   Route,
 } from "react-router-dom";
 import LoginPage from './components/LoginPage';
+import PleaseLogin from './components/PleaseLogin';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/users' element={<TableUser />} />
           <Route path='/login' element={<LoginPage />} />
+          <Route path='/error' element={<PleaseLogin />} />
         </Routes>
       </Container>
 
