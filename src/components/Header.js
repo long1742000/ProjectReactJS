@@ -31,7 +31,7 @@ const Header = (props) => {
         <>
             <Navbar bg="light" expand="lg">
                 <Container>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/ProjectReactJS/">
                         <img
                             src={logoApp}
                             width="30"
@@ -41,7 +41,7 @@ const Header = (props) => {
                         />
                         Project React</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    {(localStorage.getItem('user') || window.location.pathname === "/") &&
+                    {(localStorage.getItem('user') || window.location.pathname === "/ProjectReactJS/") &&
 
 
                         <Navbar.Collapse id="basic-navbar-nav">

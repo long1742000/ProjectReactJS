@@ -1,4 +1,11 @@
+import { useEffect } from "react";
+
 const HomePage = () => {
+
+    useEffect(() => {
+        console.log(window.location.pathname);
+    }, [])
+
     return (
         <>
             <br />
